@@ -143,14 +143,14 @@ class Crypt
 			end
 		end
 		def initialize(key)
-			if(defined? @@derived_key_initial)
-				# skip
-			elsif(defined? DATA)
-				@@derived_key_initial=Marshal.load(DATA)
-			else
-				@@derived_key_initial=DerivedKey.new
-			end
-			@derivedkey=@@derived_key_initial.dup
+			@derived_key=
+				if(defined? DerivedKeyInitial) then
+					DerivedKeyInitial
+				else
+					p "gen"
+					DerivedKey.new
+				end
+			@derivedkey=DerivedKeyInitial.dup
 			@derivedkey.update_from_key(key)
 		end
 		def encrypt(string)
