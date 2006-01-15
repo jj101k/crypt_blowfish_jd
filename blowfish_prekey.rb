@@ -147,7 +147,6 @@ class Crypt
 				if(defined? DerivedKeyInitial) then
 					DerivedKeyInitial
 				else
-					p "gen"
 					DerivedKey.new
 				end
 			@derivedkey=DerivedKeyInitial.dup
