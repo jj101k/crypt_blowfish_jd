@@ -8,7 +8,6 @@ class Crypt
 		SboxCount=4
 		SboxSize=256
 		SboxEntrySize=4
-		KeyCacheFile="initial-keys.marshal"
 
 		class Pi
 			def Pi.fraction_bytes(count=1)
@@ -146,17 +145,10 @@ class Crypt
 		def initialize(key)
 			if(defined? @@derived_key_initial)
 				# skip
-			elsif(File.exists? KeyCacheFile)
-				File.open(KeyCacheFile, "r") do
-					|file|
-					@@derived_key_initial=Marshal.load(file)
-				end
+			elsif(defined? DATA)
+				@@derived_key_initial=Marshal.load(DATA)
 			else
 				@@derived_key_initial=DerivedKey.new
-				File.open(KeyCacheFile, "w") do
-					|file|
-					Marshal.dump(@@derived_key_initial, file)
-				end
 			end
 			@derivedkey=@@derived_key_initial.dup
 			@derivedkey.update_from_key(key)
