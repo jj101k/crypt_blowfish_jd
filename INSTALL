@@ -1,0 +1,2 @@
+ruby generate-initial-keys.rb
+ruby install.rb
