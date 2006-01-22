@@ -4,3 +4,4 @@ blowfish.rb
 *.bundle
 mkmf.log
 Makefile
+core.rb
