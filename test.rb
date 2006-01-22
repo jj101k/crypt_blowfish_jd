@@ -1,6 +1,7 @@
 #!/usr/bin/ruby -w
 
-require "blowfish"
+require ARGV[0]||"./core"
+require "./blowfish"
 # From Eric Young's test vectors <http://www.schneier.com/code/vectors.txt>
 #   key bytes               clear bytes             cipher bytes
 test_ecb_data = [
@@ -50,14 +51,20 @@ cbc_expected_cyphertext =
 # ...this is how it should actually look.
 	["6B77B4D63006DEE605B156E27403979358DEB9E7154616D9749decbec05d264b"].pack("H*")
 
+die_please = (ENV["die_please"]||"100000").to_i
 # Test straight encryption
+i=0
 test_ecb_data.each do
 	|test_item|
 	blowcypher=Crypt::Blowfish.new([test_item[0]].pack("H*"))
 	cyphertext = blowcypher.encrypt([test_item[1]].pack("H*"))
-	if(cyphertext != [test_item[2]].pack("H*")) then
-		p "key=#{test_item[0]}, ptext=#{test_item[1]}: #{test_item[2]} != #{cyphertext.unpack("H*")[0]}"
+	if(cyphertext != [test_item[2]].pack("H*") or die_please==i) then
+		p "#{i} key=#{test_item[0]}, ptext=#{test_item[1]}: #{test_item[2]} != #{cyphertext.unpack("H*")[0]}"
+		$DEBUG=1
+		Crypt::Blowfish.new([test_item[0]].pack("H*")).encrypt([test_item[1]].pack("H*"))
+		raise
 	end
+	i+=1
 end
 
 # Test CBC
@@ -73,9 +80,13 @@ test_ecb_data.each do
 	|test_item|
 	blowcypher=Crypt::Blowfish.new([test_item[0]].pack("H*"))
 	plaintext = blowcypher.decrypt([test_item[2]].pack("H*"))
-	if(plaintext != [test_item[1]].pack("H*")) then
-		p "key=#{test_item[0]}, ctext=#{test_item[2]}: #{test_item[1]} != #{plaintext.unpack("H*")[0]}"
+	if(plaintext != [test_item[1]].pack("H*") or die_please==i) then
+		p "#{i} key=#{test_item[0]}, ctext=#{test_item[2]}: #{test_item[1]} != #{plaintext.unpack("H*")[0]}"
+		$DEBUG=1
+		Crypt::Blowfish.new([test_item[0]].pack("H*")).decrypt([test_item[1]].pack("H*"))
+		raise
 	end
+	i+=1
 end
 
 # Test CBC decryption

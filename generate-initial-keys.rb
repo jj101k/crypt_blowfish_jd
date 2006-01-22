@@ -1,12 +1,21 @@
-require './blowfish_prekey'
+require './core'
+require './pi-digits'
 require "fileutils"
 puts "Generating initial keys for cache..."
 FileUtils.cp("blowfish_prekey.rb", "blowfish.rb")
-derived_key_initial=Crypt::Blowfish::DerivedKey.new
+pi_digits = Pi.fraction_bytes(Crypt::Blowfish::Core.needed_pi_digits)
+DigitsPerLine=64
+def hex_digits_encode(hex_string)
+	hex_string.gsub(/../) {|hbyte| "\\x"+hbyte}
+end
 File.open("blowfish.rb", "a") do
 	|file|
-	file.write "class Crypt\n\tclass Blowfish\n\t\tDerivedKeyInitial = Marshal.load \""
-	file.write Marshal.dump(derived_key_initial).gsub(/([\x00-\x09\x0b-\x1f\x7f-\xff"#\$\\])/) {|m| '\\x' +sprintf("%02X", m[0])}
-	file.write "\"\n\tend\nend\n"
+	file.write "class Crypt\n\tclass Blowfish\n\t\tPiDigits = \n"
+	full_line_count = pi_digits.length/DigitsPerLine
+	(0 .. full_line_count-1).each do
+		|i|
+		file.write("\t\t\t\"" + hex_digits_encode(pi_digits[i*DigitsPerLine .. ((i+1)*DigitsPerLine)-1]) + "\" + \n")
+	end
+	file.write("\t\t\t\"" + hex_digits_encode(pi_digits[full_line_count*DigitsPerLine .. pi_digits.length-1]) + "\"\n\tend\nend\n")
 end
 puts "Done"

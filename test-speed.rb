@@ -1,4 +1,5 @@
 #!/usr/bin/ruby -w
+require "./core"
 require "./blowfish"
 require "crypt/cbc"
 
@@ -32,7 +33,7 @@ else
 	if(new_huge_ptext.length!=huge_ptext.length)
 		puts "Length mismatch: was #{huge_ptext.length}, is #{new_huge_ptext.length}"
 	else
-		(0 .. new_huge_ptext.length-1).each do
+		(0 .. 1024).each do
 			|offset|
 			if(new_huge_ptext[offset]!=huge_ptext[offset])
 				if(offset>5)
