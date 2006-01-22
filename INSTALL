@@ -1,2 +1,10 @@
+To install, it's pretty much just:
+
 ruby make.rb
-ruby install.rb
+sudo ruby install.rb
+
+It will ask you whether you want the binary or ruby core. I'd recommend the former, for performance
+reasons: the binary module is much faster - the difference between 400KiB/s and 11KiB/s encryption speed
+(when using CBC), so only install the pure-ruby version as a last resort.
+
+Note that if you install both, the pure-ruby one will always take precedence.
