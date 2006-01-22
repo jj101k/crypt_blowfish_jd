@@ -1,2 +1,2 @@
-ruby generate-initial-keys.rb
+ruby make.rb
 ruby install.rb
