@@ -18,14 +18,14 @@
 //#define DEBUG 1
 
 uint32_t core_function(uint32_t *sboxes, unsigned char *i_p) {
-	return (
+	return htonl((
 			(
 				sboxes[(0*SBOXSIZE)+i_p[0]] + 
 				sboxes[(1*SBOXSIZE)+i_p[1]]
 			) ^ 
 			sboxes[(2*SBOXSIZE)+i_p[2]]
 		) +
-		sboxes[(3*SBOXSIZE)+i_p[3]];
+		sboxes[(3*SBOXSIZE)+i_p[3]]);
 }
 
 
@@ -42,6 +42,7 @@ static VALUE cb_c_needed_pi_digits(VALUE self) {
 }
 
 static VALUE cb_initialise(VALUE self, VALUE pi_digit_s) {
+	int i;
 #if DEBUG
 	printf("Init\n");
 #endif
@@ -49,9 +50,13 @@ static VALUE cb_initialise(VALUE self, VALUE pi_digit_s) {
 
 	VALUE new_subkeys = rb_str_new(subkey_chunk,
 		SUBKEYARRAYSIZE);
-	VALUE new_sboxes  = rb_str_new(subkey_chunk + SUBKEYARRAYSIZE,
-		SBOXARRAYSIZE);
 	
+	uint32_t *sboxes_32b=(uint32_t *)(subkey_chunk + SUBKEYARRAYSIZE);
+	uint32_t sboxes_32b_out[SBOXCOUNT * SBOXSIZE];
+	for(i=0; i< (SBOXCOUNT * SBOXSIZE); i++) {
+		sboxes_32b_out[i]=ntohl(sboxes_32b[i]);
+	}
+	VALUE new_sboxes  = rb_str_new((char *)sboxes_32b_out, SBOXARRAYSIZE);
 #if DEBUG
 	printf("PI %u%u%u%u\n", subkey_chunk[0], subkey_chunk[1], subkey_chunk[2], subkey_chunk[3]);
 #endif
@@ -172,7 +177,8 @@ static VALUE cb_update_from_key(VALUE self, VALUE key_str) {
 #endif
 	for(i=0;i<SBOXCOUNT*SBOXSIZE;i+=2) {
 		bf_crypt(new_subkeys, sboxes, keygen_magic, 'e', keygen_magic);
-		memcpy(sboxes+i, keygen_magic, 8);
+		sboxes[i]=ntohl(keygen_magic[0]);
+		sboxes[i+1]=ntohl(keygen_magic[1]);
 	}
 #if DEBUG
 	printf("sboxes done\n");
