@@ -1,3 +1,10 @@
+v0.5
+Jim (encrypted):
+      Fix changelog
+      Show old tag; fix changelog version stuff; changelog updates to top
+      Merge ../misc_build_stuff
+      Switch to Crypt::ByteStream
+
 v0.4
 Jim (encrypted):
       Document approx speeds
