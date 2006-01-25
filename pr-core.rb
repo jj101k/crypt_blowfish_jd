@@ -1,5 +1,5 @@
 #require 'profile'
-require 'bytestream'
+require 'crypt/bytestream'
 class Crypt
 	class Blowfish
 		Rounds=16
@@ -50,7 +50,7 @@ class Crypt
 					@sboxes[i]=Sbox.new
 					SboxSize.times do
 						|j|
-						@sboxes[i][j] = ByteStream.new(sbox_data[j*SboxEntrySize, SboxEntrySize])
+						@sboxes[i][j] = Crypt::ByteStream.new(sbox_data[j*SboxEntrySize, SboxEntrySize])
 					end
 				end
 			end
@@ -67,8 +67,8 @@ class Crypt
 				else
 					raise
 				end
-				x_left=ByteStream.new(string[0, 4])
-				x_right=ByteStream.new(string[4, 4])
+				x_left=Crypt::ByteStream.new(string[0, 4])
+				x_right=Crypt::ByteStream.new(string[4, 4])
 				if($DEBUG)
 					puts "I #{x_left.unpack('I')} #{x_right.unpack('I')}"
 				end
@@ -89,7 +89,7 @@ class Crypt
 
 				x_right^=parray[Rounds]
 				x_left^=parray[Rounds+1]
-				ByteStream.new(x_left.to_str + x_right.to_str)
+				Crypt::ByteStream.new(x_left.to_str + x_right.to_str)
 			end
 			def update_from_key(key)
 				key_chunk_count=key.length/SubkeySize
@@ -97,7 +97,7 @@ class Crypt
 				SubkeyCount.times do
 					|i|
 					key_i=i.modulo(key_chunk_count)
-					@subkeys[i]=ByteStream.new(key[(key_i*SubkeySize), SubkeySize])^@subkeys[i]
+					@subkeys[i]=Crypt::ByteStream.new(key[(key_i*SubkeySize), SubkeySize])^@subkeys[i]
 				end
 				if($DEBUG)
 					puts "sk #{@subkeys[0].unpack('I')} #{@subkeys[1].unpack('I')} #{@subkeys[2].unpack('I')} #{key[0, SubkeySize].unpack('I')} #{key[SubkeySize, SubkeySize].unpack('I')} #{key[2*SubkeySize, SubkeySize].unpack('I')} (#{key.length})"
@@ -110,8 +110,8 @@ class Crypt
 				(0 .. (SubkeyCount/2)-1).each do
 					|i|
 					keygen_magic=crypt(keygen_magic, 'e')
-					@subkeys[i*2]=ByteStream.new(keygen_magic[0, 4])
-					@subkeys[(i*2)+1]=ByteStream.new(keygen_magic[4, 4])
+					@subkeys[i*2]=Crypt::ByteStream.new(keygen_magic[0, 4])
+					@subkeys[(i*2)+1]=Crypt::ByteStream.new(keygen_magic[4, 4])
 				end
 				puts "Subkeys done #{@subkeys[0].unpack('I')}" if $DEBUG
 				(0 .. SboxCount-1).each do
@@ -119,8 +119,8 @@ class Crypt
 					(0 .. (SboxSize/2)-1).each do
 						|j|
 						keygen_magic=crypt(keygen_magic, 'e')
-						@sboxes[i][(j*2)]=ByteStream.new(keygen_magic[0, 4])
-						@sboxes[i][(j*2)+1]=ByteStream.new(keygen_magic[4, 4])
+						@sboxes[i][(j*2)]=Crypt::ByteStream.new(keygen_magic[0, 4])
+						@sboxes[i][(j*2)+1]=Crypt::ByteStream.new(keygen_magic[4, 4])
 					end
 				end
 				puts "S-boxes done #{@sboxes[0][0].unpack('I')}" if $DEBUG
