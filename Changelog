@@ -6,3 +6,13 @@
 	- Added install routine and instructions
 0.1
 	-	Initial revision
+v0.3:
+Jim (encrypted):
+      Document approx speeds
+      Use htonl() please
+      Always use the pure-ruby core here
+      Only regenerate when needed
+      Header for htonl()
+      Make making releases easier
+      Merge ../misc_build_stuff
+
