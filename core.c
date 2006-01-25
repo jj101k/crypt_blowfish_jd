@@ -6,6 +6,7 @@
 #else
 #include <machine/types.h>
 #endif
+#include <netinet/in.h>
 #include "ruby.h"
 
 #define ROUNDS 16
