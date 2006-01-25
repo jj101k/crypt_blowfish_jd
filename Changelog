@@ -1,12 +1,4 @@
-0.3
-	- Added binary core
-	- Tweaked caching
-	- Improved the test scripts a little
-0.2
-	- Added install routine and instructions
-0.1
-	-	Initial revision
-v0.3:
+v0.4
 Jim (encrypted):
       Document approx speeds
       Use htonl() please
@@ -15,4 +7,12 @@ Jim (encrypted):
       Header for htonl()
       Make making releases easier
       Merge ../misc_build_stuff
+0.3
+	- Added binary core
+	- Tweaked caching
+	- Improved the test scripts a little
+0.2
+	- Added install routine and instructions
+0.1
+	-	Initial revision
 
