@@ -1,4 +1,4 @@
-require './core'
+require './pr-core'
 require './pi-digits'
 require "fileutils"
 puts "Generating initial keys for cache..."
