@@ -1,5 +1,8 @@
 #require 'profile'
-require 'crypt/bytestream'
+
+unless(defined? Crypt::ByteStream)
+	require 'crypt/bytestream'
+end
 class Crypt
 	class Blowfish
 		Rounds=16

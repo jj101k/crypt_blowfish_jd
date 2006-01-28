@@ -1,3 +1,6 @@
+class Crypt
+	ByteStream="not loaded"
+end
 require './pr-core'
 require './pi-digits'
 require "fileutils"
