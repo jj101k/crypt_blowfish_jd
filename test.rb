@@ -68,11 +68,21 @@ test_ecb_data.each do
 end
 
 # Test CBC
-blowcypher = Crypt::Blowfish.new(cbc_key)
+have_cbc=nil
+begin
 require "crypt/cbc"
-cbc = Crypt::CBC.new(blowcypher)
+have_cbc=1
+rescue LoadError
+puts "No Crypt::CBC, skipping CBC tests"
+end
+if(have_cbc)
+	blowcypher = Crypt::Blowfish.new(cbc_key)
+	cbc = Crypt::CBC.new(blowcypher)
 
-p(cbc.encrypt(iv, cbc_plaintext)==cbc_expected_cyphertext)
+	p(cbc.encrypt(iv, cbc_plaintext)==cbc_expected_cyphertext)
+else
+	puts "Ok"
+end
 
 puts "All encryption tests complete. Begin decryption tests."
 # Test straight decryption
@@ -89,8 +99,12 @@ test_ecb_data.each do
 	i+=1
 end
 
-# Test CBC decryption
-blowcypher = Crypt::Blowfish.new(cbc_key)
-cbc = Crypt::CBC.new(blowcypher)
+if(have_cbc)
+	# Test CBC decryption
+	blowcypher = Crypt::Blowfish.new(cbc_key)
+	cbc = Crypt::CBC.new(blowcypher)
 
-p(cbc.decrypt(iv, cbc_expected_cyphertext)==cbc_plaintext)
+	p(cbc.decrypt(iv, cbc_expected_cyphertext)==cbc_plaintext)
+else
+	puts "Ok"
+end
