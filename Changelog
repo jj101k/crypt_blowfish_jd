@@ -1,3 +1,13 @@
+v0.7
+Jim Driscoll (7):
+      Always ask for 0644
+      Update for 1.9 compat
+      Use Crypt::ByteStream 1.9 features
+      Ask for strict mode from Crypt::ByteStream. Mo reason not to.
+      Update release tools
+      Ignore rubinius compiled files
+      Note compatibility and performance
+
 v0.6.1
 v0.5
 Jim (encrypted):
