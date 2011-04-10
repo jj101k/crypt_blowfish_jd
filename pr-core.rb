@@ -2,6 +2,7 @@
 
 unless(defined? Crypt::ByteStream)
 	require 'crypt/bytestream'
+  Crypt::ByteStream.strict_mode=true
 end
 class Crypt
 	class Blowfish
