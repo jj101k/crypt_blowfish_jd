@@ -59,7 +59,7 @@ class Crypt
 			end
 			def core_function(half_block)
 					# These are no-overflow 32-bit pluses below.
-					( ( @sboxes[0][half_block[0]] + @sboxes[1][half_block[1]] ) ^ @sboxes[2][half_block[2]] ) + @sboxes[3][half_block[3]]
+					( ( @sboxes[0][half_block.byte_at(0)] + @sboxes[1][half_block.byte_at(1)] ) ^ @sboxes[2][half_block.byte_at(2)] ) + @sboxes[3][half_block.byte_at(3)]
 			end
 			def crypt(string, mode='e')
 				raise unless string.length==8
