@@ -13,12 +13,14 @@ def hex_digits_encode(hex_string)
 end
 File.open("blowfish.rb", "a") do
 	|file|
-	file.write "class Crypt\n\tclass Blowfish\n\t\tPiDigits = \n"
+	file.write "class Crypt\n\tclass Blowfish\n\t\tPiDigits = [\n"
 	full_line_count = pi_digits.length/DigitsPerLine
 	(0 .. full_line_count-1).each do
 		|i|
-		file.write("\t\t\t\"" + hex_digits_encode(pi_digits[i*DigitsPerLine .. ((i+1)*DigitsPerLine)-1]) + "\" + \n")
+		digits = pi_digits[i*DigitsPerLine .. ((i+1)*DigitsPerLine)-1]
+		file.write("\t\t\t\"" + digits + "\" + \n")
 	end
-	file.write("\t\t\t\"" + hex_digits_encode(pi_digits[full_line_count*DigitsPerLine .. pi_digits.length-1]) + "\"\n\tend\nend\n")
+	digits = pi_digits[full_line_count*DigitsPerLine .. pi_digits.length-1]
+	file.write("\t\t\t\"" + digits + "\"\n\t\t].pack(\"H*\")\n\tend\nend\n")
 end
 puts "Done"
