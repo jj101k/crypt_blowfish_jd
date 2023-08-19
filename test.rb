@@ -47,7 +47,7 @@ cbc_plaintext = "7654321 Now is the time for \x00"
 
 cbc_expected_cyphertext =
 # This assumes zero-padding... but we do PKCS#5 padding, so...
-# ["6B77B4D63006DEE605B156E27403979358DEB9E7154616D959F1652BD5FF92CC"].pack("H*"))
+#   ["6B77B4D63006DEE605B156E27403979358DEB9E7154616D959F1652BD5FF92CC"].pack("H*"))
 # ...this is how it should actually look.
 	["6B77B4D63006DEE605B156E27403979358DEB9E7154616D9749decbec05d264b"].pack("H*")
 
