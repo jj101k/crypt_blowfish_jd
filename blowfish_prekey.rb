@@ -8,6 +8,9 @@ class Crypt
 			if($DEBUG)
 				p "Debugging"
 			end
+			if(PiDigits.length < Core.needed_pi_digits)
+				throw :too_few_digits
+			end
 			@derivedkey=Core.new(PiDigits)
 			@derivedkey.update_from_key(key)
 			if($DEBUG)
