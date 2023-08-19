@@ -21,9 +21,9 @@
 uint32_t core_function(uint32_t *sboxes, unsigned char *i_p) {
 	return htonl((
 			(
-				sboxes[(0*SBOXSIZE)+i_p[0]] + 
+				sboxes[(0*SBOXSIZE)+i_p[0]] +
 				sboxes[(1*SBOXSIZE)+i_p[1]]
-			) ^ 
+			) ^
 			sboxes[(2*SBOXSIZE)+i_p[2]]
 		) +
 		sboxes[(3*SBOXSIZE)+i_p[3]]);
@@ -47,11 +47,11 @@ static VALUE cb_initialise(VALUE self, VALUE pi_digit_s) {
 #if DEBUG
 	printf("Init\n");
 #endif
-	char *subkey_chunk = RSTRING(pi_digit_s)->ptr;
+	char *subkey_chunk = RSTRING_PTR(pi_digit_s);
 
 	VALUE new_subkeys = rb_str_new(subkey_chunk,
 		SUBKEYARRAYSIZE);
-	
+
 	uint32_t *sboxes_32b=(uint32_t *)(subkey_chunk + SUBKEYARRAYSIZE);
 	uint32_t sboxes_32b_out[SBOXCOUNT * SBOXSIZE];
 	for(i=0; i< (SBOXCOUNT * SBOXSIZE); i++) {
@@ -77,7 +77,7 @@ uint32_t *bf_crypt(uint32_t *subkeys, uint32_t *sboxes, uint32_t *to_encrypt, ch
 		printf("i %u %u\n", dest[0], dest[1]);
 #endif
 		for(i=0;i<ROUNDS;i+=2) {
-			
+
 			dest[0]^=subkeys[i];
 #if DEBUG
 			printf("q %u %u\n", subkeys[i], core_function(sboxes, (unsigned char *)dest));
@@ -99,7 +99,7 @@ uint32_t *bf_crypt(uint32_t *subkeys, uint32_t *sboxes, uint32_t *to_encrypt, ch
 		x_tmp=dest[0];
 		dest[0]=dest[1]^subkeys[ROUNDS+1];
 		dest[1]=x_tmp^subkeys[ROUNDS];
-		
+
 	} else {
 		for(i=ROUNDS+1;i>1;i-=2) {
 			dest[0]^=subkeys[i];
@@ -123,41 +123,41 @@ uint32_t *bf_crypt(uint32_t *subkeys, uint32_t *sboxes, uint32_t *to_encrypt, ch
 		}
 		x_tmp=dest[0];
 		dest[0]=dest[1]^subkeys[0];
-		dest[1]=x_tmp^subkeys[1];	
+		dest[1]=x_tmp^subkeys[1];
 	}
 	return dest;
 }
 
 VALUE cb_crypt(VALUE self, VALUE string, VALUE mode) {
-	uint32_t *i_p = (uint32_t *)(RSTRING(string)->ptr);
+	uint32_t *i_p = (uint32_t *)RSTRING_PTR(string);
 	uint32_t dest[2];
-	uint32_t *sboxes = (uint32_t *)(RSTRING(rb_iv_get(self, "@sboxes"))->ptr);
-	uint32_t *subkeys = (uint32_t *)(RSTRING(rb_iv_get(self, "@subkeys"))->ptr);
+	uint32_t *sboxes = (uint32_t *)RSTRING_PTR(rb_iv_get(self, "@sboxes"));
+	uint32_t *subkeys = (uint32_t *)RSTRING_PTR(rb_iv_get(self, "@subkeys"));
 #if DEBUG
 	printf("SKE %u %u\n", subkeys[0], sboxes[0]);
 #endif
-	bf_crypt(subkeys, sboxes, i_p, (RSTRING(mode)->ptr)[0], dest);
+	bf_crypt(subkeys, sboxes, i_p, RSTRING_PTR(mode)[0], dest);
 	return rb_str_new((char *)dest, 8);
 }
 
 static VALUE cb_update_from_key(VALUE self, VALUE key_str) {
 	uint32_t new_subkeys[SUBKEYCOUNT];
-	uint32_t *key_chunks=(uint32_t *)(RSTRING(key_str)->ptr);
-	uint32_t *subkeys=(uint32_t *)(RSTRING(rb_iv_get(self, "@subkeys"))->ptr);
-	uint32_t *sboxes = (uint32_t *)(RSTRING(rb_iv_get(self, "@sboxes"))->ptr);
+	uint32_t *key_chunks=(uint32_t *)RSTRING_PTR(key_str);
+	uint32_t *subkeys=(uint32_t *)RSTRING_PTR(rb_iv_get(self, "@subkeys"));
+	uint32_t *sboxes = (uint32_t *)RSTRING_PTR(rb_iv_get(self, "@sboxes"));
 	int i;
 	/*
-	 * For each chunk of the key, XOR it into new_subkeys, repeating 
+	 * For each chunk of the key, XOR it into new_subkeys, repeating
 	 * as necessary.
 	 */
-	
+
 	// We need this so that we can flip back and forth over the key
-	unsigned long key_chunk_count = (RSTRING(key_str)->len)/sizeof(uint32_t);
+	unsigned long key_chunk_count = RSTRING_LEN(key_str)/sizeof(uint32_t);
 	for(i=0;i<SUBKEYCOUNT;i++) {
 		new_subkeys[i]=subkeys[i]^key_chunks[i%key_chunk_count];
 	}
 #if DEBUG
-	printf("SK %u %u %u %u %u %u(%i)\n", new_subkeys[0], new_subkeys[1], new_subkeys[2], key_chunks[0], key_chunks[1], key_chunks[2], RSTRING(key_str)->len);
+	printf("SK %u %u %u %u %u %u(%i)\n", new_subkeys[0], new_subkeys[1], new_subkeys[2], key_chunks[0], key_chunks[1], key_chunks[2], RSTRING_LEN(key_str));
 #endif
 	/*
 	 * For all the subkeys, then the s-boxes, replace the contents
@@ -209,7 +209,7 @@ void Init_core() {
 	rb_define_method(cFoo, "update_from_key", cb_update_from_key, 1);
 	rb_define_method(cFoo, "subkeys", cb_subkeys, 0);
 	rb_define_method(cFoo, "sboxes", cb_sboxes, 0);
-	rb_define_module_function(cFoo, 
+	rb_define_module_function(cFoo,
 		"needed_pi_digits", cb_c_needed_pi_digits, 0);
     //make_dot_cache();
     //make_sbox_caches();

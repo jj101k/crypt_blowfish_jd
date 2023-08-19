@@ -1,9 +1,9 @@
 require "rbconfig.rb"
-include Config
+include RbConfig
 require "fileutils"
 include FileUtils::Verbose
 unless(File.exists? "blowfish.rb")
-	require "generate-initial-keys.rb"
+	require "./generate-initial-keys.rb"
 end
 
 loop do
