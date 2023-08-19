@@ -1,4 +1,4 @@
-class Crypt
+class JdCrypt
 	ByteStream="not loaded"
 end
 require './pr-core'
