@@ -1,6 +1,6 @@
 #!/usr/bin/ruby -w
 
-require ARGV[0]||"./core"
+require ARGV[0] || "./core"
 require "./blowfish"
 # From Eric Young's test vectors <http://www.schneier.com/code/vectors.txt>
 #   key bytes               clear bytes             cipher bytes
@@ -41,70 +41,70 @@ test_ecb_data = [
 %w{FEDCBA9876543210        FFFFFFFFFFFFFFFF        6B5C5A9C5D9E0A5A}
 ]
 
-cbc_key   = ["0123456789ABCDEFF0E1D2C3B4A59687"].pack("H*")
-iv    = ["FEDCBA9876543210"].pack("H*")
+cbc_key       = ["0123456789ABCDEFF0E1D2C3B4A59687"].pack("H*")
+iv            = ["FEDCBA9876543210"].pack("H*")
 cbc_plaintext = "7654321 Now is the time for \x00"
 
 cbc_expected_cyphertext =
 # This assumes zero-padding... but we do PKCS#5 padding, so...
 #   ["6B77B4D63006DEE605B156E27403979358DEB9E7154616D959F1652BD5FF92CC"].pack("H*"))
 # ...this is how it should actually look.
-	["6B77B4D63006DEE605B156E27403979358DEB9E7154616D9749decbec05d264b"].pack("H*")
+    ["6B77B4D63006DEE605B156E27403979358DEB9E7154616D9749decbec05d264b"].pack("H*")
 
-die_please = (ENV["die_please"]||"100000").to_i
+die_please = (ENV["die_please"] || "100000").to_i
 # Test straight encryption
-i=0
+i = 0
 test_ecb_data.each do
-	|test_item|
-	blowcypher=Crypt::Blowfish.new([test_item[0]].pack("H*"))
-	cyphertext = blowcypher.encrypt([test_item[1]].pack("H*"))
-	if(cyphertext != [test_item[2]].pack("H*") or die_please==i) then
-		p "#{i} key=#{test_item[0]}, ptext=#{test_item[1]}: #{test_item[2]} != #{cyphertext.unpack("H*")[0]}"
-		$DEBUG=1
-		Crypt::Blowfish.new([test_item[0]].pack("H*")).encrypt([test_item[1]].pack("H*"))
-		raise
-	end
-	i+=1
+    |test_item|
+    blowcypher = Crypt::Blowfish.new([test_item[0]].pack("H*"))
+    cyphertext = blowcypher.encrypt([test_item[1]].pack("H*"))
+    if(cyphertext != [test_item[2]].pack("H*") or die_please == i) then
+        p "#{i} key=#{test_item[0]}, ptext=#{test_item[1]}: #{test_item[2]} != #{cyphertext.unpack("H*")[0]}"
+        $DEBUG = 1
+        Crypt::Blowfish.new([test_item[0]].pack("H*")).encrypt([test_item[1]].pack("H*"))
+        raise
+    end
+    i += 1
 end
 
 # Test CBC
-have_cbc=nil
+have_cbc = nil
 begin
-require "crypt/cbc"
-have_cbc=1
+    require "crypt/cbc"
+    have_cbc = 1
 rescue LoadError
-puts "No Crypt::CBC, skipping CBC tests"
+    puts "No Crypt::CBC, skipping CBC tests"
 end
 if(have_cbc)
-	blowcypher = Crypt::Blowfish.new(cbc_key)
-	cbc = Crypt::CBC.new(blowcypher)
+    blowcypher = Crypt::Blowfish.new(cbc_key)
+    cbc = Crypt::CBC.new(blowcypher)
 
-	p(cbc.encrypt(iv, cbc_plaintext)==cbc_expected_cyphertext)
+    p(cbc.encrypt(iv, cbc_plaintext) == cbc_expected_cyphertext)
 else
-	puts "Ok"
+    puts "Ok"
 end
 
 puts "All encryption tests complete. Begin decryption tests."
 # Test straight decryption
 test_ecb_data.each do
-	|test_item|
-	blowcypher=Crypt::Blowfish.new([test_item[0]].pack("H*"))
-	plaintext = blowcypher.decrypt([test_item[2]].pack("H*"))
-	if(plaintext != [test_item[1]].pack("H*") or die_please==i) then
-		p "#{i} key=#{test_item[0]}, ctext=#{test_item[2]}: #{test_item[1]} != #{plaintext.unpack("H*")[0]}"
-		$DEBUG=1
-		Crypt::Blowfish.new([test_item[0]].pack("H*")).decrypt([test_item[1]].pack("H*"))
-		raise
-	end
-	i+=1
+    |test_item|
+    blowcypher = Crypt::Blowfish.new([test_item[0]].pack("H*"))
+    plaintext = blowcypher.decrypt([test_item[2]].pack("H*"))
+    if(plaintext != [test_item[1]].pack("H*") or die_please == i) then
+        p "#{i} key=#{test_item[0]}, ctext=#{test_item[2]}: #{test_item[1]} != #{plaintext.unpack("H*")[0]}"
+        $DEBUG = 1
+        Crypt::Blowfish.new([test_item[0]].pack("H*")).decrypt([test_item[1]].pack("H*"))
+        raise
+    end
+    i += 1
 end
 
 if(have_cbc)
-	# Test CBC decryption
-	blowcypher = Crypt::Blowfish.new(cbc_key)
-	cbc = Crypt::CBC.new(blowcypher)
+    # Test CBC decryption
+    blowcypher = Crypt::Blowfish.new(cbc_key)
+    cbc = Crypt::CBC.new(blowcypher)
 
-	p(cbc.decrypt(iv, cbc_expected_cyphertext)==cbc_plaintext)
+    p(cbc.decrypt(iv, cbc_expected_cyphertext) == cbc_plaintext)
 else
-	puts "Ok"
+    puts "Ok"
 end
