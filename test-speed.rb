@@ -1,7 +1,7 @@
 #!/usr/bin/ruby -w
 require "./core"
 require "./blowfish"
-require "crypt/cbc"
+require "jdcrypt/cbc"
 
 SampleKey = "1" * 8
 SampleIV = "2" * 8
@@ -10,7 +10,7 @@ puts "Testing time-to-encrypt a big block of data (keeping it in core)...\n"
 huge_ptext = IO.readlines("bwulf10.txt", nil)[0]
 
 crypt = Crypt::Blowfish.new(SampleKey)
-crypt_cbc = Crypt::CBC.new(crypt)
+crypt_cbc = JdCrypt::CBC.new(crypt)
 
 before = Time.new
 huge_ctext = crypt_cbc.encrypt(SampleIV, huge_ptext)

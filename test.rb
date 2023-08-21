@@ -70,14 +70,14 @@ end
 # Test CBC
 have_cbc = nil
 begin
-    require "crypt/cbc"
+    require "jdcrypt/cbc"
     have_cbc = 1
 rescue LoadError
-    puts "No Crypt::CBC, skipping CBC tests"
+    puts "No JdCrypt::CBC, skipping CBC tests"
 end
 if(have_cbc)
     blowcypher = Crypt::Blowfish.new(cbc_key)
-    cbc = Crypt::CBC.new(blowcypher)
+    cbc = JdCrypt::CBC.new(blowcypher)
 
     p(cbc.encrypt(iv, cbc_plaintext) == cbc_expected_cyphertext)
 else
@@ -102,7 +102,7 @@ end
 if(have_cbc)
     # Test CBC decryption
     blowcypher = Crypt::Blowfish.new(cbc_key)
-    cbc = Crypt::CBC.new(blowcypher)
+    cbc = JdCrypt::CBC.new(blowcypher)
 
     p(cbc.decrypt(iv, cbc_expected_cyphertext) == cbc_plaintext)
 else
