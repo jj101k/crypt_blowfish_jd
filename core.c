@@ -202,7 +202,7 @@ static VALUE cb_sboxes(VALUE self) {
 }
 
 void Init_core() {
-    VALUE cCrypt = rb_define_class("Crypt", rb_cObject);
+    VALUE cCrypt = rb_define_class("JdCrypt", rb_cObject);
     VALUE cCB = rb_define_class_under(cCrypt, "Blowfish", rb_cObject);
     VALUE cFoo = rb_define_class_under(cCB, "Core", rb_cObject);
     rb_define_method(cFoo, "initialize", cb_initialise, 1);

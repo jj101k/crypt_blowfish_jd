@@ -7,14 +7,14 @@ require "fileutils"
 
 puts "Generating initial keys for cache..."
 FileUtils.cp("blowfish_prekey.rb", "blowfish.rb")
-pi_digits = Pi.fraction_bytes(Crypt::Blowfish::Core.needed_pi_digits)
+pi_digits = Pi.fraction_bytes(JdCrypt::Blowfish::Core.needed_pi_digits)
 DigitsPerLine = 64
 def hex_digits_encode(hex_string)
     hex_string.gsub(/../) { |hbyte| "\\x" + hbyte }
 end
 File.open("blowfish.rb", "a") do
     |file|
-    file.write "class Crypt\n\tclass Blowfish\n\t\tPiDigits = [\n"
+    file.write "class JdCrypt\n\tclass Blowfish\n\t\tPiDigits = [\n"
     full_line_count = pi_digits.length / DigitsPerLine
     (0 .. full_line_count - 1).each do
         |i|

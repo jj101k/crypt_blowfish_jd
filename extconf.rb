@@ -1,3 +1,3 @@
 require "mkmf"
 have_header("stdint.h")
-create_makefile("crypt/blowfish/core")
+create_makefile("jdcrypt/blowfish/core")

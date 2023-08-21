@@ -4,7 +4,7 @@ unless(defined? JdCrypt::ByteStream)
     require 'jdcrypt/bytestream'
     JdCrypt::ByteStream.strict_mode = true
 end
-class Crypt
+class JdCrypt
     class Blowfish
         Rounds = 16
         SubkeyCount = Rounds + 2

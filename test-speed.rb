@@ -9,7 +9,7 @@ SampleIV = "2" * 8
 puts "Testing time-to-encrypt a big block of data (keeping it in core)...\n"
 huge_ptext = IO.readlines("bwulf10.txt", nil)[0]
 
-crypt = Crypt::Blowfish.new(SampleKey)
+crypt = JdCrypt::Blowfish.new(SampleKey)
 crypt_cbc = JdCrypt::CBC.new(crypt)
 
 before = Time.new

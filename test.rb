@@ -56,12 +56,12 @@ die_please = (ENV["die_please"] || "100000").to_i
 i = 0
 test_ecb_data.each do
     |test_item|
-    blowcypher = Crypt::Blowfish.new([test_item[0]].pack("H*"))
+    blowcypher = JdCrypt::Blowfish.new([test_item[0]].pack("H*"))
     cyphertext = blowcypher.encrypt([test_item[1]].pack("H*"))
     if(cyphertext != [test_item[2]].pack("H*") or die_please == i) then
         p "#{i} key=#{test_item[0]}, ptext=#{test_item[1]}: #{test_item[2]} != #{cyphertext.unpack("H*")[0]}"
         $DEBUG = 1
-        Crypt::Blowfish.new([test_item[0]].pack("H*")).encrypt([test_item[1]].pack("H*"))
+        JdCrypt::Blowfish.new([test_item[0]].pack("H*")).encrypt([test_item[1]].pack("H*"))
         raise
     end
     i += 1
@@ -76,7 +76,7 @@ rescue LoadError
     puts "No JdCrypt::CBC, skipping CBC tests"
 end
 if(have_cbc)
-    blowcypher = Crypt::Blowfish.new(cbc_key)
+    blowcypher = JdCrypt::Blowfish.new(cbc_key)
     cbc = JdCrypt::CBC.new(blowcypher)
 
     p(cbc.encrypt(iv, cbc_plaintext) == cbc_expected_cyphertext)
@@ -88,12 +88,12 @@ puts "All encryption tests complete. Begin decryption tests."
 # Test straight decryption
 test_ecb_data.each do
     |test_item|
-    blowcypher = Crypt::Blowfish.new([test_item[0]].pack("H*"))
+    blowcypher = JdCrypt::Blowfish.new([test_item[0]].pack("H*"))
     plaintext = blowcypher.decrypt([test_item[2]].pack("H*"))
     if(plaintext != [test_item[1]].pack("H*") or die_please == i) then
         p "#{i} key=#{test_item[0]}, ctext=#{test_item[2]}: #{test_item[1]} != #{plaintext.unpack("H*")[0]}"
         $DEBUG = 1
-        Crypt::Blowfish.new([test_item[0]].pack("H*")).decrypt([test_item[1]].pack("H*"))
+        JdCrypt::Blowfish.new([test_item[0]].pack("H*")).decrypt([test_item[1]].pack("H*"))
         raise
     end
     i += 1
@@ -101,7 +101,7 @@ end
 
 if(have_cbc)
     # Test CBC decryption
-    blowcypher = Crypt::Blowfish.new(cbc_key)
+    blowcypher = JdCrypt::Blowfish.new(cbc_key)
     cbc = JdCrypt::CBC.new(blowcypher)
 
     p(cbc.decrypt(iv, cbc_expected_cyphertext) == cbc_plaintext)

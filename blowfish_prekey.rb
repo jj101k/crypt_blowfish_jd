@@ -1,8 +1,8 @@
 #require 'profile'
-unless(defined? Crypt::Blowfish::Core)
-    require "crypt/blowfish/core"
+unless(defined? JdCrypt::Blowfish::Core)
+    require "jdcrypt/blowfish/core"
 end
-class Crypt
+class JdCrypt
     class Blowfish
         def initialize(key)
             if($DEBUG)
