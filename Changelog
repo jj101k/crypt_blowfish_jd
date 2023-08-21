@@ -1,3 +1,14 @@
+0.8
+Jim Driscoll (8):
+      Fix the build for modern Ruby
+      Switch to the new JdCrypt::ByteStream
+      Fix pure-Ruby core: avoid characters being considered to be UTF-8
+      Minor formatting update
+      Add a self-check that there are enough digits
+      General code style (whitespace) cleanup
+      Update to use JdCrypt::CBC
+      Move this class into jdcrypt
+
 v0.7
 Jim Driscoll (7):
       Always ask for 0644
