@@ -1,3 +1,10 @@
+0.9
+Jim Driscoll (4):
+      Improve advice
+      Fix the install
+      Style update
+      Switch to using a symbol to decide encrypt/decrypt
+
 0.8
 Jim Driscoll (8):
       Fix the build for modern Ruby
