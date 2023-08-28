@@ -47,11 +47,18 @@ cbc_key = ["0123456789ABCDEFF0E1D2C3B4A59687"].pack("H*")
 iv = ["FEDCBA9876543210"].pack("H*")
 cbc_plaintext = "7654321 Now is the time for \x00"
 
+# % echo -n "7654321 Now is the time for \x00" | openssl enc -bf-cbc -K
+# 0123456789ABCDEFF0E1D2C3B4A59687 -iv FEDCBA9876543210 | od -t x1
+# 0000000    6b  77  b4  d6  30  06  de  e6  05  b1  56  e2  74  03  97  93
+# 0000020    58  de  b9  e7  15  46  16  d9  74  9d  ec  be  c0  5d  26  4b
+# 0000040
+# %
+
 cbc_expected_cyphertext =
   # This assumes zero-padding... but we do PKCS#5 padding, so...
   #   ["6B77B4D63006DEE605B156E27403979358DEB9E7154616D959F1652BD5FF92CC"].pack("H*"))
   # ...this is how it should actually look.
-  ["6B77B4D63006DEE605B156E27403979358DEB9E7154616D9749decbec05d264b"].pack("H*")
+  ["6B 77 B4 D6 30 06 DE E6   05 B1 56 E2 74 03 97 93   58 DE B9 E7 15 46 16 D9  74 9d ec be c0 5d 26 4b".gsub(/ /, "")].pack("H*")
 
 die_please = (ENV["die_please"] || "100000").to_i
 # Test straight encryption
