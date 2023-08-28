@@ -18,6 +18,18 @@
 
 //#define DEBUG 1
 
+/**
+ * @brief
+ *
+ */
+ID encrypt_id;
+
+/**
+ * @brief
+ *
+ */
+ID decrypt_id;
+
 uint32_t core_function(uint32_t *sboxes, unsigned char *i_p) {
     return htonl((
             (
@@ -136,7 +148,16 @@ VALUE cb_crypt(VALUE self, VALUE string, VALUE mode) {
 #if DEBUG
     printf("SKE %u %u\n", subkeys[0], sboxes[0]);
 #endif
-    bf_crypt(subkeys, sboxes, i_p, RSTRING_PTR(mode)[0], dest);
+    Check_Type(mode, T_SYMBOL);
+    ID mode_i = SYM2ID(mode);
+
+    if(mode_i == encrypt_id) {
+        bf_crypt(subkeys, sboxes, i_p, 'e', dest);
+    } else if(mode_i == decrypt_id) {
+        bf_crypt(subkeys, sboxes, i_p, 'd', dest);
+    } else {
+        rb_raise(rb_eRuntimeError, "Invalid symbol for mode");
+    }
     return rb_str_new((char *)dest, 8);
 }
 
@@ -212,6 +233,7 @@ void Init_core() {
     rb_define_method(cFoo, "sboxes", cb_sboxes, 0);
     rb_define_module_function(cFoo,
         "needed_pi_digits", cb_c_needed_pi_digits, 0);
-    //make_dot_cache();
-    //make_sbox_caches();
+
+    decrypt_id = rb_intern("decrypt");
+    encrypt_id = rb_intern("encrypt");
 }

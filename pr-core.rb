@@ -65,12 +65,12 @@ class JdCrypt
           @sboxes[3][half_block.byte_at(3)]
       end
 
-      def crypt(string, mode = "e")
+      def crypt(string, mode = :encrypt)
         raise unless string.length == 8
 
-        if mode == "e"
+        if mode == :encrypt
           parray = @subkeys
-        elsif mode == "d"
+        elsif mode == :decrypt
           parray = @subkeys.reverse
         else
           raise
@@ -110,14 +110,14 @@ class JdCrypt
         # with the results of an encryption of the current magic value
         # (replacing the magic value also)
         (0..(SubkeyCount / 2) - 1).each do |i|
-          keygen_magic = crypt(keygen_magic, "e")
+          keygen_magic = crypt(keygen_magic, :encrypt)
           @subkeys[i * 2] = JdCrypt::ByteStream.new(keygen_magic[0, 4])
           @subkeys[(i * 2) + 1] = JdCrypt::ByteStream.new(keygen_magic[4, 4])
         end
         puts "Subkeys done #{@subkeys[0].unpack("I")}" if $DEBUG
         (0..SboxCount - 1).each do |i|
           (0..(SboxSize / 2) - 1).each do |j|
-            keygen_magic = crypt(keygen_magic, "e")
+            keygen_magic = crypt(keygen_magic, :decrypt)
             @sboxes[i][j * 2] = JdCrypt::ByteStream.new(keygen_magic[0, 4])
             @sboxes[i][(j * 2) + 1] = JdCrypt::ByteStream.new(keygen_magic[4, 4])
           end

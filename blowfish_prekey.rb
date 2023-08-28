@@ -18,12 +18,12 @@ class JdCrypt
 
     def encrypt(string)
       p "Enc" if $DEBUG
-      @derivedkey.crypt(string, "e")
+      @derivedkey.crypt(string, :encrypt)
     end
 
     def decrypt(string)
       p "Dec" if $DEBUG
-      @derivedkey.crypt(string, "d")
+      @derivedkey.crypt(string, :decrypt)
     end
   end
 end
