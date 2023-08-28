@@ -12,7 +12,7 @@ require "jdcrypt/blowfish"
 
 # For a single block
 cipher = JdCrypt::Blowfish.new(my_key)
-block_ciphertext = blowcypher.encrypt(my_plaintext_block)
+block_ciphertext = cipher.encrypt(block_plaintext)
 
 # For a stream, using CBC (not provided here)
 
