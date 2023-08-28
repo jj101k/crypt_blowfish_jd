@@ -1,4 +1,7 @@
 #!/usr/bin/ruby -w
+
+# frozen_string_literal: true
+
 require "./core"
 require "./blowfish"
 require "jdcrypt/cbc"
@@ -26,25 +29,24 @@ after = Time.new
 
 diff = after - before
 puts sprintf("#{diff} seconds to decrypt (%.1fKiB/s).\n", size / diff)
-if(new_huge_ptext == huge_ptext)
-    puts "All seemed to work.\n"
+if new_huge_ptext == huge_ptext
+  puts "All seemed to work.\n"
 else
-    puts "Argh! Something went pear-shaped!\n"
-    if(new_huge_ptext.length != huge_ptext.length)
-        puts "Length mismatch: was #{huge_ptext.length}, is #{new_huge_ptext.length}"
-    else
-        (0 .. 1024).each do
-            |offset|
-            if(new_huge_ptext[offset] != huge_ptext[offset])
-                if(offset > 5)
-                    p "Mismatch at #{offset}: '#{new_huge_ptext[offset - 5, 10]}' != '#{huge_ptext[offset - 5, 10]}'"
-                else
-                    p "Mismatch at #{offset}: '#{new_huge_ptext[0, 10]}' != '#{huge_ptext[0, 10]}'"
-                end
-            end
+  puts "Argh! Something went pear-shaped!\n"
+  if new_huge_ptext.length != huge_ptext.length
+    puts "Length mismatch: was #{huge_ptext.length}, is #{new_huge_ptext.length}"
+  else
+    0.upto(1024) do |offset|
+      if new_huge_ptext[offset] != huge_ptext[offset]
+        if offset > 5
+          p "Mismatch at #{offset}: '#{new_huge_ptext[offset - 5, 10]}' != '#{huge_ptext[offset - 5, 10]}'"
+        else
+          p "Mismatch at #{offset}: '#{new_huge_ptext[0, 10]}' != '#{huge_ptext[0, 10]}'"
         end
+      end
     end
+  end
 end
 
 puts "Here's (a snippet of) the result of the decryption:\n"
-puts "\n..." + new_huge_ptext[40960, 256] + "...\n"
+puts "\n...#{new_huge_ptext[40_960, 256]}...\n"
