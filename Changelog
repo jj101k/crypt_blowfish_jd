@@ -1,3 +1,11 @@
+1.0
+Jim Driscoll (5):
+      Fix copyright date range
+      Provide better advice about usage
+      More clearly test against openssl
+      Wrong var name
+      Declare block sizes
+
 0.9
 Jim Driscoll (4):
       Improve advice
