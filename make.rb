@@ -5,7 +5,7 @@ include RbConfig
 require "fileutils"
 include FileUtils::Verbose
 
-require "./generate-initial-keys" unless File.exist? "blowfish.rb"
+require "./generate-initial-keys"
 
 loop do
   puts "Do you want to install the binary (b) or pure-ruby (r) core? (b/r)?"
