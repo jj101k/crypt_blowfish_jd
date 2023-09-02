@@ -1,3 +1,7 @@
+1.0.1
+Jim Driscoll (1):
+      Fix regeneration of the main class
+
 1.0
 Jim Driscoll (5):
       Fix copyright date range
